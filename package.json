@@ -1,0 +1,46 @@
+{
+  "author": {
+    "name": "sebworks"
+  },
+  "bin": {
+    "visual-monk": "./cli/index.js"
+  },
+  "bugs": {
+    "url": "https://github.com/sebworks/visual-monk/issues"
+  },
+  "dependencies": {
+    "cucumber": "^2.3.1",
+    "gulp": "^3.9.1",
+    "jimp": "^0.2.28",
+    "minimist": "^1.2.0",
+    "node-yaml": "^3.1.0",
+    "protractor": "^5.1.2",
+    "protractor-cucumber-framework": "^3.1.2",
+    "simplecrawler": "^1.1.3"
+  },
+  "description": "Visual regression testing using Protractor and Cucumber",
+  "devDependencies": {},
+  "homepage": "https://github.com/sebworks/visual-monk#readme",
+  "keywords": [
+    "visual",
+    "regression",
+    "testing",
+    "protractor",
+    "cucumber"
+  ],
+  "license": "ISC",
+  "main": "index.js",
+  "name": "visual-monk",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "readmeFilename": "README.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sebworks/visual-monk.git"
+  },
+  "scripts": {
+    "install": "node ./node_modules/protractor/bin/webdriver-manager update",
+    "test": "npm test"
+  },
+  "version": "1.0.0"
+}

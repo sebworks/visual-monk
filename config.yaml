@@ -1,0 +1,41 @@
+
+SiteCrawler:
+  host: localhost
+  port: 8000
+  siteIndexFile: ./siteIndex.json
+  parseHTMLComments: false
+  parseScriptTags: false
+  stripQuerystring: true
+  maxConcurrency: 30
+  IGNORE_URLS_REGEX: /\/ask-cfpb\//
+  errorThreshold: 100
+
+Protractor:
+  baseUrl: http://localhost:8000
+
+  specsBasePath: ../cucumber/features/*.feature
+
+  suites:
+    default: ../cucumber/features/*.feature
+
+  windowSizes:
+    desktop:
+      width:  1200
+      height: 900
+    tablet:
+      width:  768,
+      height: 1024
+    mobile:
+      width:  600,
+      height: 740
+
+  testName: 'visual-monk'
+
+  defaultSuites:
+    headless:
+      - browserName: 'chrome'
+        chromeOptions:
+          args:
+            - '--headless'
+            - '--disable-gpu'
+        maxDuration: 10800
