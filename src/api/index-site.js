@@ -1,6 +1,5 @@
 'use strict';
 
-const gulpUtil = require( 'gulp-util' );
 const SimpleCrawler = require( 'simplecrawler' );
 const config = require( '../../util/config.js' ).SiteCrawler;
 const siteCrawlerPromise = require( '../../util/empty-promise' )();
@@ -11,14 +10,15 @@ const siteCrawlerPromise = require( '../../util/empty-promise' )();
  */
 function _addSiteIndexEvents( siteCrawler ) {
   let errorCount = 0;
+
   siteCrawler.on( 'fetchcomplete', ( queueItem, responseBuffer ) => {
-    gulpUtil.log( 'Indexing: ' +  queueItem.url );
+    consle.log( 'Indexing: ' +  queueItem.url );
   } );
 
   siteCrawler.on( 'fetcherror', err => {
     errorCount++
     if( errorCount > config.errorThreshold ) {
-      gulpUtil.log( 'There was a problem creating the index.' );
+      console.log( 'There was a problem creating the index.' );
       siteCrawlerPromise.reject();
       process.exit();
     }
@@ -26,7 +26,7 @@ function _addSiteIndexEvents( siteCrawler ) {
 
   siteCrawler.on( 'complete', queueItem => {
     siteCrawler.queue.freeze( config.siteIndexFile, () => {
-      gulpUtil.log( 'Index successfully completed.' );
+      console.log( 'Index successfully completed.' );
       siteCrawlerPromise.resolve();
       process.exit();
     } );
