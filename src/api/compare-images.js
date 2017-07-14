@@ -1,37 +1,17 @@
 
 'use strict';
 
-const minimist = require( 'minimist' );
-const cliOptions = require( '../../cli/options' );
-const webdriver = require( 'selenium-webdriver' );
+const Jimp = require( 'jimp' );
 
-const BROWSERS = {
-  CHROME:  'chrome',
-  FIREFOX: 'firefox'
-}
 
-function getBrowser( ) {
-  const browser = cliOptions.browser || BROWSERS.CHROME;
-  const capabilities = webdriver.Capabilities[browser]();
+function compareImages( imageA, imageB, options={} ) {
 
-  if ( cliOptions.headless && browser == BROWSERS.CHROME ) {
-    capabilities.set( 'chromeOptions', {
-      'args': [ '--headless' ]
-    } );
-  }
-
-  return new webdriver.Builder()
-         .withCapabilities( capabilities )
-         .build()
-}
-
-function create( ) {
-
-  return getBrowser()
-         .then( driver => {
-            return driver.get( 'http://www.google.com/ncr' )
-            .then( _ => driver.quit() );
+  return Promise.all( [ Jimp.read( imageA ), Jimp.read( imageB ) ] )
+         .then( ( [ JimpImageA, JimpImageB ] ) => {
+            const diffImage = Jimp.diff( JimpImageA, JimpImageB, 0.1 );
+            diffImage.image.write( 'diff.jpg' );
          } );
 }
 
-module.exports = { create: create };
+module.exports = compareImages;
+`

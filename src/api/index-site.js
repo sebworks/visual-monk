@@ -2,7 +2,6 @@
 
 const SimpleCrawler = require( 'simplecrawler' );
 const config = require( '../../util/config.js' ).SiteCrawler;
-const siteCrawlerPromise = require( '../../util/empty-promise' )();
 
 /**
  * Add site index.
@@ -12,14 +11,15 @@ function _addSiteIndexEvents( siteCrawler ) {
   let errorCount = 0;
 
   siteCrawler.on( 'fetchcomplete', ( queueItem, responseBuffer ) => {
-    consle.log( 'Indexing: ' +  queueItem.url );
+    console.log( 'Indexing: ' +  queueItem.url );
   } );
 
   siteCrawler.on( 'fetcherror', err => {
+    console.log( 'fetching' );
+
     errorCount++
     if( errorCount > config.errorThreshold ) {
       console.log( 'There was a problem creating the index.' );
-      siteCrawlerPromise.reject();
       process.exit();
     }
   } );
@@ -27,7 +27,6 @@ function _addSiteIndexEvents( siteCrawler ) {
   siteCrawler.on( 'complete', queueItem => {
     siteCrawler.queue.freeze( config.siteIndexFile, () => {
       console.log( 'Index successfully completed.' );
-      siteCrawlerPromise.resolve();
       process.exit();
     } );
   } );
@@ -35,10 +34,9 @@ function _addSiteIndexEvents( siteCrawler ) {
   siteCrawler.addFetchCondition( queueItem => {
     const IGNORE_ITEMS_REGEX =
       /\.(png|jpg|jpeg|gif|ico|css|js|csv|doc|docx|pdf|woff|html|zip|svg)$/i;
-    const IGNORE_URLS_REGEX = /\/(ask-cfpb|es)\// || /UNDEFINED/;
 
-    return !queueItem.path.match( IGNORE_ITEMS_REGEX ) &&
-           !queueItem.path.match( IGNORE_URLS_REGEX );
+    return !queueItem.path.match( IGNORE_ITEMS_REGEX );
+     //      !queueItem.path.match( IGNORE_URLS_REGEX );
   } );
 
   return siteCrawler;
@@ -64,13 +62,10 @@ function _addToQueueItem( queueItem, components ) {
 /**
  * Create site index.
  */
-function start( ) {
+function indexSite( url, options ) {
   const indexArray = [];
-  const options = gulpUtil.env;
-  const host = options.host || config.host;
-  const port = options.port || config.port;
-  const SITE_LOCATION = 'http://' + host + ':' + port;
-  const siteLocation = options.siteLocation || SITE_LOCATION;
+  const URL = 'http://' + config.host + ':' + config.port;
+  const siteLocation = url || URL;
   const siteCrawler = SimpleCrawler( siteLocation );
   const siteCrawlerDefaults = {
     parseHTMLComments: false,
@@ -82,11 +77,7 @@ function start( ) {
 
   _addSiteIndexEvents( siteCrawler );
 
-  siteCrawler.start()
-
-  return siteCrawlerPromise;
+  return siteCrawler.start()
 }
 
-module.exports = {
-  start: start
-}
+module.exports = indexSite;

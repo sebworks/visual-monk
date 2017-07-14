@@ -1,19 +1,18 @@
 #!/usr/bin/env node
 
-var commander = require( 'commander' );
-
 'use strict';
+
+const commander = require( 'commander' );
+const api = require( '../src/api' );
 
 commander.version( '0.1.0' );
 
-//snapshot localhost:8000 --name=index.image --breakpoints=all
-// compare imageA imageB
-
 commander
 .command( 'compare <image> <image>' )
-.description( 'Execute the given remote cmd' )
+.description( 'Compare two images.' )
 .action( ( imageA, imageB ) => {
-	console.log(  imageA, imageB )
+	console.log( imageA, imageB )
+	api.compareImages( imageA, imageB );
 } ).on( '--help', _ => {
 	console.log( 'Examples:' );
 	console.log();
@@ -21,12 +20,12 @@ commander
 } );
 
 commander
-.command( 'reference' )
-.description( 'execute the given remote cmd' )
-.option( '-e, --enter-site <mode>', '' )
-.option( '-e, --enter-site <mode>', 'Create reference images for the entire site.' )
-.action( ( cmd, options ) => {
-	console.log(  );
+.command( 'index [url]')
+.description( 'Index a site. Defaults to http://localhost:8000.' )
+.description( 'See https://github.com/cgiffard/node-simplecrawler#configuration.' )
+.option( '-d, --maxDepth [maxDepth]'  )
+.action( ( url, options ) => {
+	api.indexSite( url, options );
 } ).on( '--help', _ => {
 	console.log( 'Examples:' );
 	console.log();
@@ -35,11 +34,12 @@ commander
 
 commander
 .command( 'snapshot [url]' )
-.description( 'Take a snapshot of a url' )
+.description( 'Take a snapshot of a URL' )
+.option( '-e, --enter-site', 'Take snapshots of the entire site.' )
 .option( '-n, --name [name]', 'Name of the snapshot. It will default to the url' )
 .option( '-w, --widths [widths]', 'List of breakpoints' )
 .action( ( url , options ) => {
-	console.log( url );
+	api.takeSnapShots( url, options );
 } ).on( '--help', _ => {
 	console.log( 'Examples:' );
 	console.log();
