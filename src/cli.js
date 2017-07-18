@@ -1,13 +1,16 @@
 #!/usr/bin/env node
 
-var commander = require( 'commander' );
-
 'use strict';
 
-commander.version( '0.1.0' );
+const commander = require( 'commander' );
+const { execFile } = require('child_process');
 
-//snapshot localhost:8000 --name=index.image --breakpoints=all
-// compare imageA imageB
+
+commander.version( '0.1.0' )
+.name( 'visual-monk' )
+.on( '*', _ => {
+	console.log('help')
+} );
 
 commander
 .command( 'compare <image> <image>' )
@@ -44,6 +47,16 @@ commander
 	console.log( 'Examples:' );
 	console.log();
 	console.log();
+} );
+
+commander
+.description( 'Update specific webdriver installs' )
+.action( () => {
+	console.log( commander.help() );
+	//execFile( './node_modules/webdriver-manager/bin/webdriver-manager',  );
+} )
+.on( '--help', _ => {
+	require('webdriver-manager');
 } );
 
 commander.parse( process.argv );
