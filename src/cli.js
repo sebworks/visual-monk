@@ -4,8 +4,14 @@
 
 const commander = require( 'commander' );
 const api = require( '../src/api' );
+const { execFile } = require('child_process');
 
-commander.version( '0.1.0' );
+
+commander.version( '0.1.0' )
+.name( 'visual-monk' )
+.on( '*', _ => {
+	console.log('help')
+} );
 
 commander
 .command( 'compare <image> <image>' )
@@ -44,6 +50,16 @@ commander
 	console.log( 'Examples:' );
 	console.log();
 	console.log();
+} );
+
+commander
+.description( 'Update specific webdriver installs' )
+.action( () => {
+	console.log( commander.help() );
+	//execFile( './node_modules/webdriver-manager/bin/webdriver-manager',  );
+} )
+.on( '--help', _ => {
+	require('webdriver-manager');
 } );
 
 commander.parse( process.argv );

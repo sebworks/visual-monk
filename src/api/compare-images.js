@@ -14,4 +14,3 @@ function compareImages( imageA, imageB, options={} ) {
 }
 
 module.exports = compareImages;
-`

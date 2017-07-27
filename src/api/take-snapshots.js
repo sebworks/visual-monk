@@ -12,7 +12,6 @@ function getBrowser( ) {
 
   if ( cliOptions.headless ) {
     capabilities.set( 'chromeOptions', {
-      'binary': '/Users/bellamys/homebrew/Caskroom/google-chrome-canary/latest/Google\ Chrome\ Canary.app/Contents/MacOS/Google\ Chrome\ Canary',
       'args': [ '--headless' ]
     } );
   }
@@ -46,7 +45,6 @@ function writeScreenshot( data, name ) {
 
   return
 };
-
 
 function takeSnapShots( url, options ) {
 
