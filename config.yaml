@@ -1,6 +1,7 @@
 
 VisualMonk:
   snapShotPath: ./
+  baseUrl: http://localhost:8000
 
 SiteCrawler:
   host: localhost
@@ -13,11 +14,8 @@ SiteCrawler:
   IGNORE_URLS_REGEX: /\/ask-cfpb\//
   errorThreshold: 100
 
-WebdriverJS:
-  baseUrl: http://localhost:8000
-
+Cucumber:
   specsBasePath: ../cucumber/features/*.feature
-
   suites:
     default: ../cucumber/features/*.feature
 

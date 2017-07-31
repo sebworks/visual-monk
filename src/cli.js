@@ -4,7 +4,7 @@
 
 const commander = require( 'commander' );
 const api = require( '../src/api' );
-const { execFile } = require('child_process');
+const { execFile } = require( 'child_process' );
 
 
 commander.version( '0.1.0' )
@@ -44,6 +44,9 @@ commander
 .option( '-e, --enter-site', 'Take snapshots of the entire site.' )
 .option( '-n, --name [name]', 'Name of the snapshot. It will default to the url' )
 .option( '-w, --widths [widths]', 'List of breakpoints' )
+.option( '-b, --browser [browser]', 'Web browser driver to use.' )
+.option( '-h, --headless [headless]', 'Should the browser be headless.' )
+
 .action( ( url , options ) => {
 	api.takeSnapShots( url, options );
 } ).on( '--help', _ => {

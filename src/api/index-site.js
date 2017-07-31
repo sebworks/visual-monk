@@ -1,7 +1,7 @@
 'use strict';
 
 const SimpleCrawler = require( 'simplecrawler' );
-const config = require( '../../util/config.js' ).SiteCrawler;
+const config = require( '../util/config.js' ).SiteCrawler;
 
 /**
  * Add site index.
