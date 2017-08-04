@@ -18,7 +18,4 @@ function getDriverPaths() {
   return driverPaths;
 }
 
-
-
-
 module.exports = getDriverPaths;

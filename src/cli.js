@@ -6,23 +6,19 @@ const commander = require( 'commander' );
 const api = require( '../src/api' );
 const { execFile } = require( 'child_process' );
 
-
 commander.version( '0.1.0' )
 .name( 'visual-monk' )
 .on( '*', _ => {
-	console.log('help')
+	console.log( 'help' );
 } );
 
 commander
 .command( 'compare <image> <image>' )
 .description( 'Compare two images.' )
 .action( ( imageA, imageB ) => {
-	console.log( imageA, imageB )
 	api.compareImages( imageA, imageB );
 } ).on( '--help', _ => {
 	console.log( 'Examples:' );
-	console.log();
-	console.log();
 } );
 
 commander
@@ -34,8 +30,6 @@ commander
 	api.indexSite( url, options );
 } ).on( '--help', _ => {
 	console.log( 'Examples:' );
-	console.log();
-	console.log();
 } );
 
 commander
@@ -46,13 +40,11 @@ commander
 .option( '-w, --widths [widths]', 'List of breakpoints' )
 .option( '-b, --browser [browser]', 'Web browser driver to use.' )
 .option( '-h, --headless [headless]', 'Should the browser be headless.' )
-
+.option( '-s, --selector [selector]', 'Selector to use to retreive element.' )
 .action( ( url , options ) => {
 	api.takeSnapShots( url, options );
 } ).on( '--help', _ => {
 	console.log( 'Examples:' );
-	console.log();
-	console.log();
 } );
 
 commander
@@ -62,7 +54,7 @@ commander
 	//execFile( './node_modules/webdriver-manager/bin/webdriver-manager',  );
 } )
 .on( '--help', _ => {
-	require('webdriver-manager');
+	require( 'webdriver-manager' );
 } );
 
 commander.parse( process.argv );

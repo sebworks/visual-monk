@@ -4,62 +4,102 @@
 const config = require( '../util/config' ).VisualMonk;
 const fs = require( 'fs' );
 const getDriverPaths = require( '../util/get-driver-paths' );
+const Jimp = require( 'jimp' );
 const minimist = require( 'minimist' );
 const webdriver = require( 'selenium-webdriver' );
+const By = webdriver.By;
 
-function getBrowser( options={} ) {
+async function getBrowser( options={} ) {
   const driverPath = getDriverPaths().chrome.last;
   const browser = options.browser || 'chrome';
   const capabilities = webdriver.Capabilities[browser]();
 
-  if ( options.headless ) {
+  if ( options.headless && browser === 'chrome' ) {
     capabilities.set( 'chromeOptions', {
-      'args': [ '--headless']
+      'args': [ '--headless' ]
     } );
   }
 
   return new webdriver.Builder()
-  .withCapabilities( capabilities )
-  .build();
+         .withCapabilities( capabilities )
+         .build();
 }
 
-function getBrowserInfo( driver ) {
-  function _getBrowserInfoScript() {
+async function getBrowserInfo( driver ) {
+  function getBrowserInfoScript() {
 
     return {
-      clientWidth:     document.querySelector( 'div' ).offsetWidth,
-      bodyHeight:      document.body.offsetHeight,
-      bodyWidth:       document.body.offsetWidth,
-      maxScrollAmount: document.body.offsetHeight - window.innerHeight,
-      pixelRatio:      window.devicePixelRatio
+      height:     document.body.offsetHeight - window.innerHeight,
+      pixelRatio: window.devicePixelRatio || 0
     };
   }
 
-  return driver.executeScript( _getBrowserInfoScript );
+  return driver.executeScript( getBrowserInfoScript );
 }
 
-function writeScreenshot( data, name = 'screenshot' ) {
-  name = name + '.png';
-  var stream = fs.createWriteStream( config.snapShotPath + name );
-  stream.write( new Buffer( data, 'base64' ) );
-  stream.end();
+async function getElementInfo( driver, selector, browserInfo ) {
+  const element = await driver.findElement( By.css( selector ) );
+  const location = await element.getLocation();
+  const size = await element.getSize();
+  const elementInfo = { pixelRatio: browserInfo.pixelRatio };
+
+  return Object.assign( elementInfo, size, location );
+}
+
+function writeScreenshot( data, imageMetadata, name = 'screenshot' ) {
+  const imageBuffer = new Buffer( data, 'base64' );
+  const imagePath = config.snapShotPath + name + '.png';
+  const cropMetadata = {};
+
+  if ( imageMetadata ) {
+    if( imageMetadata.pixelRatio ) {
+      Object.keys( imageMetadata ).forEach( key => {
+        cropMetadata[key] = imageMetadata[key] * imageMetadata.pixelRatio;
+      } );
+    }
+
+    Jimp.read( imageBuffer, ( err, image ) => {
+      image.crop( cropMetadata.x,
+                  cropMetadata.y,
+                  cropMetadata.width,
+                  cropMetadata.height,
+                  ( err, image ) => image.write( imagePath ) );
+    } );
+  } else {
+    const stream = fs.createWriteStream( imagePath );
+    stream.write( new Buffer( data, 'base64' ) );
+    stream.end();
+  }
 
   return
 };
 
+async function setWindowSize( driver, width, height ) {
+
+  return driver.manage().window().setSize( width, height );
+};
+
 async function takeSnapShots( url, options={} ) {
   let driver;
+  let elementInfo;
+
   try {
     driver = await getBrowser( options );
     url = url || config.baseUrl;
     await driver.get( url );
     const browserInfo = await getBrowserInfo( driver );
+    await setWindowSize( driver,
+                         config.windowSizes.default.width,
+                         browserInfo.height );
 
-    console.log( browserInfo );
+    if( options.selector ) {
+      elementInfo = await getElementInfo( driver,
+                                          options.selector,
+                                          browserInfo );
+    }
 
-    await driver.manage().window().setSize( 1440, browserInfo.maxScrollAmount );
     const data = await driver.takeScreenshot();
-    await writeScreenshot( data );
+    writeScreenshot( data, elementInfo, options.name );
   } finally {
     if ( driver ) driver.quit();
   }

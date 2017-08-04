@@ -2,6 +2,19 @@
 VisualMonk:
   snapShotPath: ./
   baseUrl: http://localhost:8000
+  windowSizes:
+    default:
+      width: 1440
+      height: 900
+    desktop:
+      width:  1200
+      height: 900
+    tablet:
+      width:  768,
+      height: 1024
+    mobile:
+      width:  600,
+      height: 740
 
 SiteCrawler:
   host: localhost
@@ -19,24 +32,4 @@ Cucumber:
   suites:
     default: ../cucumber/features/*.feature
 
-  windowSizes:
-    desktop:
-      width:  1200
-      height: 900
-    tablet:
-      width:  768,
-      height: 1024
-    mobile:
-      width:  600,
-      height: 740
-
   testName: 'visual-monk'
-
-  defaultSuites:
-    headless:
-      - browserName: 'chrome'
-        chromeOptions:
-          args:
-            - '--headless'
-            - '--disable-gpu'
-        maxDuration: 10800
