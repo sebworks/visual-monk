@@ -1,20 +1,18 @@
 
 VisualMonk:
-  snapShotPath: ./
+  snapshotPath: ./
+  snapshotName: ${name}_${browser}_${width}
   baseUrl: http://localhost:8000
   windowSizes:
-    default:
-      width: 1440
-      height: 900
     desktop:
-      width:  1200
-      height: 900
+      width: 1440
+      height:
     tablet:
-      width:  768,
-      height: 1024
+      width:  901
+      height:
     mobile:
-      width:  600,
-      height: 740
+      width:  600
+      height:
 
 SiteCrawler:
   host: localhost
